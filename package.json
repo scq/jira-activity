@@ -40,6 +40,7 @@
         "moment": "^2.22.2",
         "settings-store": "1.4.0",
         "superagent": "^3.8.3",
+        "tslib": "^2.5.0",
         "xml2js-es6-promise": "^1.1.1"
     },
     "devDependencies": {
