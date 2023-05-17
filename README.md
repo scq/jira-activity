@@ -20,8 +20,10 @@ npm run dev list
 # if you do not have defaults or wants to override them
 npm run dev list -u your@username.com -h some.hostname
 
-# if you only want to see your activities for the current week or month
-npm run dev list -f week
-npm run dev list -f month
+# export the last four financial quarters of information
+npm run dev list -- --max 10000 --out fq1.txt --from "2022-04-01 00:00:00" --to "2022-06-30 23:59:59"
+npm run dev list -- --max 10000 --out fq2.txt --from "2022-07-01 00:00:00" --to "2022-09-30 23:59:59"
+npm run dev list -- --max 10000 --out fq3.txt --from "2022-10-01 00:00:00" --to "2022-12-31 23:59:59"
+npm run dev list -- --max 10000 --out fq4.txt --from "2023-01-01 00:00:00" --to "2023-03-31 23:59:59"
 ```
 ![Example Image](https://raw.githubusercontent.com/ruettenm/jira-activity/master/img/example.png)

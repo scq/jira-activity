@@ -29,9 +29,14 @@ export interface GroupedActivities {
     }
 }
 
-export const getActivities = async (jiraSettings: JiraSettings, maxResults: number, verbose: boolean, fromDate?: number): Promise<GroupedActivities> => {
-    const fromDateFilter = fromDate ? `&streams=update-date+AFTER+${fromDate}` : ''
-    const url = `activity?maxResults=${maxResults}&streams=user+IS+${encodeURIComponent(jiraSettings.username)}${fromDateFilter}&os_authType=basic`
+export const getActivities = async (jiraSettings: JiraSettings, maxResults: number, verbose: boolean, fromS?: string, toS?: string): Promise<GroupedActivities> => {
+    let dateFilter = ''
+    if (fromS && toS) {
+        const from = new Date(fromS);
+        const to = new Date(toS);
+        dateFilter = `&streams=update-date+BETWEEN+${from.getTime()}+${to.getTime()}`;
+    }
+    const url = `activity?maxResults=${maxResults}&streams=user+IS+${encodeURIComponent(jiraSettings.username)}${dateFilter}&os_authType=basic`;
     const response = await requestWithCredentials(jiraSettings, url, verbose).buffer(true)
 
     if (verbose) {

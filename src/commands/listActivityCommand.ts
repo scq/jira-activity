@@ -1,10 +1,10 @@
 import * as settingsStore from 'settings-store'
 import * as inquirer from 'inquirer'
-import * as moment from 'moment'
 import * as cliSpinner from 'cli-spinner'
+import * as fs from 'fs';
 
 import { getActivities, JiraSettings } from '../jira'
-import { print } from '../print'
+import { print, printToString } from '../print'
 import { showDefaultsCommand } from './showDefaultsCommand'
 
 const spinner = new cliSpinner.Spinner('accessing jira.. %s')
@@ -15,15 +15,9 @@ export const listActivityCommand = async (command: any) => {
         const hostname = command.hostname || settingsStore.value('settings.hostname')
         const username = command.username || settingsStore.value('settings.username')
         const maxResults = command.max || 500
-        const filter = command.filter
         const verbose = command.verbose
-
-        if (filter) {
-            if (!['week', 'month'].includes(filter)) {
-                console.error('Please use the term "week" or "month" to filter the output')
-                process.exit(1)
-            }
-        }
+        const from = command.from
+        const to = command.to
 
         if (verbose) {
             console.log('Running in "verbose" mode.')
@@ -52,9 +46,14 @@ export const listActivityCommand = async (command: any) => {
                     jiraSettings,
                     maxResults,
                     verbose,
-                    filter ? moment().startOf(filter).unix() * 1000 : undefined
+                    from,
+                    to,
                 )
-                print(activities)
+                if (command.out) {
+                    fs.writeFileSync(command.out, printToString(activities))
+                } else {
+                    print(activities)
+                }
             } catch (error) {
                 console.log(`\nOps, something went wrong: "${error.message}"`)
             }
